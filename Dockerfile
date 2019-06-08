@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
     dbus-x11 \
     gdb \
     git \
+    man \
+    nautilus \
     sudo \
     terminator \
     tmux \

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-echo "Building latest image (tail -f debug.log for details)"
-docker build . -t pwntainer:`cat version` 2>&1 > debug.log &
+echo "Building latest image (tail -f /tmp/debug.log for details)"
+docker build . -t pwntainer:`cat version` 2>&1 > /tmp/pwntainer_debug.log &
 pid=$! ; i=0
 while ps -a | awk '{print $1}' | grep -q "${pid}"
 do
@@ -54,13 +54,13 @@ fi
 if [ `docker ps -a -q --filter 'name=pwntainer' 2> /dev/null | wc -l` -gt 0 ]; then
   if [ `docker ps -q --filter 'name=pwntainer' 2> /dev/null | wc -l` -gt 0 ]; then
     echo "Pwntainer already running!  Exec in..."
-    docker exec -tiu root pwntainer /bin/bash
+    docker exec -tiu root pwntainer terminator 2>&1 >> /tmp/pwntainer_debug.log
   else
     echo "Pwntainer exists, but isn't running... restarting..."
     docker start -ai pwntainer
   fi
 else
   echo "Starting pwntainer!"
-  docker run -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -h pwntainer --name pwntainer -v $HOME:/home/hacker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pwntainer:`cat version`
+  docker run -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -h pwntainer --name pwntainer -v $HOME:/home/hacker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pwntainer:`cat version` 2>&1 >> /tmp/pwntainer_debug.log
 fi
 
