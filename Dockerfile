@@ -1,13 +1,25 @@
 FROM ubuntu:18.04
 
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8     
+
 RUN apt-get update && apt-get install -y \
     bc \
     build-essential \
+    cmake \
     dbus-x11 \
     gdb \
     git \
+    libffi-dev \
+    libssl-dev \
+    locales \
     man \
     nautilus \
+    python3-pip \  
+    python-pip \
+    python-dev \
+    ruby \
     sudo \
     terminator \
     tmux \
@@ -15,7 +27,9 @@ RUN apt-get update && apt-get install -y \
     vim \
     wget \
     xpra \
-    xterm
+    xterm \
+  && sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+  && locale-gen
 
 # Setup Ghidra
 WORKDIR /usr/local/bin
@@ -25,27 +39,27 @@ RUN git clone https://github.com/bkerler/ghidra_installer.git . \
   && ./install-jdk.sh
 
 # Setup GEF
-WORKDIR /tmp
-RUN wget -q -O- https://github.com/hugsy/gef/raw/master/scripts/gef.sh | sh
+RUN echo 'export LC_CTYPE=C.UTF-8' >> /root/.bashrc \
+  && echo 'export LD_LIBRARY_PATH=/usr/local/lib/' >> /root/.bashrc \
+  && pip3 install \
+    archinfo \
+    capstone \
+    keystone-engine \
+    pyvex \
+    ropper \
+    unicorn \
+    z3 \
+  && wget -q -O- https://github.com/hugsy/gef/raw/master/scripts/gef.sh | sh
 
 # Setup PWN Tools
-RUN apt-get install -y \
-    python2.7 \
-    python-pip \
-    python-dev \
-    libssl-dev \
-    libffi-dev \
-  && pip install pwntools
+RUN pip install pwntools
 
 # Setup OneGadget
-RUN apt-get install -y \
-    ruby \
-  && gem install one_gadget
+RUN gem install one_gadget
 
 # angr
 RUN pip install angr
 
-WORKDIR /usr/local/bin
 ADD workspace.sh .
 
 WORKDIR /home/hacker
