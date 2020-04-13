@@ -36,8 +36,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /usr/local/bin
 RUN git clone https://github.com/bkerler/ghidra_installer.git . \
   && ./install-ghidra.sh
-  # && ./install-scaling.sh \
-  # && ./install-jdk.sh
 
 # Setup GEF
 RUN echo 'export LC_CTYPE=C.UTF-8' >> /root/.bashrc \
