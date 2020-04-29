@@ -63,6 +63,7 @@ if [ `docker ps -a -q --filter 'name=pwntainer' 2> /dev/null | wc -l` -gt 0 ]; t
   fi
 else
   echo "Starting pwntainer!"
-  docker run -d --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -h pwntainer --name pwntainer -v $HOME:/home/hacker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pwntainer:`cat version` 2>&1 >> /tmp/pwntainer_debug.log &
+  xhost + 127.0.0.1
+  docker run -d --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -h pwntainer --name pwntainer -v $HOME:/home/hacker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=host.docker.internal:0 pwntainer:`cat version` 2>&1 >> /tmp/pwntainer_debug.log &
 fi
 

@@ -35,9 +35,7 @@ RUN apt-get update && apt-get install -y \
 # Setup Ghidra
 WORKDIR /usr/local/bin
 RUN git clone https://github.com/bkerler/ghidra_installer.git . \
-  && ./install-ghidra.sh \
-  && ./install-scaling.sh \
-  && ./install-jdk.sh
+  && ./install-ghidra.sh
 
 # Setup GEF
 RUN echo 'export LC_CTYPE=C.UTF-8' >> /root/.bashrc \
@@ -59,7 +57,7 @@ RUN pip install pwntools
 RUN gem install one_gadget
 
 # angr
-RUN pip install angr
+RUN pip3 install angr
 
 ADD workspace.sh .
 
